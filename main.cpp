@@ -1,6 +1,7 @@
 #include "fileOperations.h"
 #include "encodingMethods.h"
 #include "binaryOperations.h"
+#include "validations.h"
 
 #include <iostream>
 #include <cctype>
@@ -31,19 +32,14 @@ int main()
     delete[] arrayCharCod; // Se libera la memoria del arreglo char, y se trabaja con el string de binarios
     arrayCharCod = nullptr;
 
-    char mCod;
     cout << "Digite el metodo que desea para codificar: " << endl;
     cout << "1. Primer metodo: codificacion por cantidad de bits.\n2. Segundo metodo: codificacion por rotacion de 1 bit hacia la derecha." << endl;
-    cin >> mCod;
+    int mCod = intValidation(1, 2);
+
     cout << "Ingrese la cantidad de bits para cada bloque: " << endl;
-    cin >> sCod;
-    //seed = 4;
+    sCod = intValidation(1, 16);
 
-    //FALTA VALIDAR ENTRADAS
-
-    //m = '2';
-
-    if (mCod == '1'){
+    if (mCod == 1){
         cout << "El archivo en binario seria: " << endl;
         cout << binaryCod << endl;
 
@@ -68,7 +64,7 @@ int main()
         writeBinaryFile (codifBinary, outputFile);
     }
 
-    cout << "DECODIFICACION" << endl;
+    cout << "\nDECODIFICACION" << endl;
 
     string openFileDec = "";
     //cout << "Ingrese el nombre del archivo fuente: " << endl;
@@ -82,28 +78,20 @@ int main()
     string binaryDec = "";
 
     for (int i = 0; i < tamDec; i++){
-        if (isspace(arrayCharDec[i])) {
-            continue; // Ignorar todos los caracteres de espacio en blanco
-        }
         binaryDec += binaryConversion(arrayCharDec[i]); // Se concatena cada bin(char[i]) en un string
     }
 
     delete[] arrayCharDec; // Se libera la memoria del arreglo char, y se trabaja con el string de binarios
     arrayCharDec = nullptr;
 
-    char mDec;
     cout << "Digite el metodo que desea para decodificar: " << endl;
     cout << "1. Primer metodo: decodificacion por cantidad de bits.\n2. Segundo metodo: decodificacion por rotacion de 1 bit hacia la derecha." << endl;
-    cin >> mDec;
+    int mDec = intValidation(1, 2);
+
     cout << "Ingrese la cantidad de bits para cada bloque: " << endl;
-    cin >> sDec;
-    //seed = 4;
+    sDec = intValidation(1, 16);
 
-    //FALTA VALIDAR ENTRADAS
-
-    //m = '2';
-
-    if (mDec == '1'){
+    if (mDec == 1){
         cout << "El archivo en binario seria: " << endl;
         cout << binaryDec << endl;
 
