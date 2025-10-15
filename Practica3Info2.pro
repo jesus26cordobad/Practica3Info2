@@ -7,9 +7,11 @@ SOURCES += \
         binaryOperations.cpp \
         encodingMethods.cpp \
         fileOperations.cpp \
-        main.cpp
+        main.cpp \
+        validations.cpp
 
 HEADERS += \
     binaryOperations.h \
     encodingMethods.h \
-    fileOperations.h
+    fileOperations.h \
+    validations.h
