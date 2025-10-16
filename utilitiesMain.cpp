@@ -10,20 +10,6 @@ using namespace std;
 
 
 void menuAdministrador(int mCod, int sCod, string codRealPassw, string **&users, int &numUsers, bool &modifiedData) {
-    /**
-     * @brief Menú de administrador que permite registrar un nuevo usuario en el sistema.
-     *
-     * Verifica la contraseña del administrador aplicando una codificación binaria
-     * y, si es válida, solicita los datos del nuevo usuario, los convierte a binario
-     * y los almacena en el arreglo dinámico de usuarios.
-     *
-     * @param mCod Método de codificación a usar (1 o 2).
-     * @param sCod Semilla o clave adicional para el método de codificación.
-     * @param codRealPassw Contraseña codificada válida del administrador.
-     * @param users Referencia doble al arreglo dinámico de usuarios.
-     * @param numUsers Referencia al número actual de usuarios (será incrementado).
-     * @param modifiedData Referencia a la bandera que indica si hubo cambios en los datos.
-     */
     string passwInp, binPasswInp = "", codPasswInp = "";
     cout << "Ingrese la contrasena de administrador: " << endl;
     cin >> passwInp;
@@ -88,17 +74,6 @@ void menuAdministrador(int mCod, int sCod, string codRealPassw, string **&users,
 }
 
 void menuUsuario(string **users, int numUsers, bool &modifiedData) {
-    /**
-     * @brief Menú de usuario que permite consultar o retirar dinero tras autenticación.
-     *
-     * Verifica credenciales del usuario ingresado y, si son válidas, le permite
-     * consultar su saldo o realizar un retiro. Se descuenta un valor fijo por el uso.
-     *
-     * @param users Arreglo dinámico de usuarios registrados en el sistema.
-     * @param numUsers Número total de usuarios registrados.
-     * @param modifiedData Referencia a la bandera que indica si hubo cambios en los datos.
-     */
-
     string cedulaIng = strValidation(10, "cedula");
     string claveIng = strValidation(4, "clave");
 
@@ -120,8 +95,8 @@ void menuUsuario(string **users, int numUsers, bool &modifiedData) {
 
             // Convertir saldo binario a string
             string actMoneyStr = "";
-            for (size_t i = 0; i + 8 <= dineroStr.size(); i += 8) {
-                string byte = dineroStr.substr(i, 8);
+            for (size_t j = 0; j + 8 <= dineroStr.size(); j += 8) {
+                string byte = dineroStr.substr(j, 8);
                 char c = static_cast<char>(bitset<8>(byte).to_ulong());
                 actMoneyStr += c;
             }
@@ -172,16 +147,6 @@ void menuUsuario(string **users, int numUsers, bool &modifiedData) {
 }
 
 void leerDatosArchivo(string &binaryData, int &tamFileBin, char *&arrayCharBin) {
-    /**
-     * @brief Lee el archivo binario de usuarios y convierte su contenido a una cadena binaria.
-     *
-     * Intenta leer el archivo "users.bin" en formato binario. Si se lee exitosamente,
-     * su contenido se almacena en un string binario y en un arreglo de caracteres.
-     *
-     * @param binaryData Referencia al string donde se almacenará el contenido binario leído.
-     * @param tamFileBin Referencia al entero que guarda el tamaño del archivo leído.
-     * @param arrayCharBin Referencia al puntero donde se almacenará el arreglo leído desde el archivo.
-     */
     int estadoLectura = readFileChar("users.bin", arrayCharBin, tamFileBin);
     if (estadoLectura == 0) {
         for (int i = 0; i < tamFileBin; i++) {

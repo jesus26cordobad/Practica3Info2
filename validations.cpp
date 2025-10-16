@@ -44,7 +44,7 @@ int intValidation(int limInf,int limSup){
             cin.ignore(1000, '\n'); //Ignorar caracteres erroneos
             cout << "Entrada no valida. Por favor ingrese un numero." << endl;
         } else if (!rangeValidation(num, limInf, limSup)) {
-            cout << "La opcion ingresada esta fuera del rango valido." << endl;
+            cout << "Saldo insuficiente." << endl;
         } else{
             return num;
         }

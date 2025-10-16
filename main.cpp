@@ -73,48 +73,42 @@ int main() {
         } else {
             exit = true;
 
-            // Si hubo modificaciones, guardar los datos actualizados
-            const string separador = "00101111"; // Separador binario entre usuarios
-
-            if (modifiedData) {
+            // Guardar siempre si hay usuarios, no solo si mofiedData es true
+            if (numUsers > 0) {
+                const string separador = "00101111"; // Separador binario entre usuarios
                 string totalCodif = "";
 
                 for (int j = 0; j < numUsers; j++) {
+                    // Codificar cada campo del usuario (cédula, clave, dinero)
                     for (int i = 0; i < 3; i++) {
-                        string binData = "", codifData = "";
-                        codifData = users[j][i];
+                        string codifData = users[j][i];
+                        string binData = "";
 
-                        // Codificar cada campo del usuario (usuario, clave, dinero)
-                        if (i == 2) {
-                            codifData = users[j][i];
-                            if (mCod == 1) {
-                                firstMethodCodification(codifData, binData, sCod);
-                            } else if (mCod == 2) {
-                                secondMethodCodification(codifData, binData, sCod);
-                            }
+                        // Aplicar codificación según el método elegido
+                        if (mCod == 1) {
+                            firstMethodCodification(codifData, binData, sCod);
                         } else {
-                            if (mCod == 1) {
-                                firstMethodCodification(codifData, binData, sCod);
-                            } else if (mCod == 2) {
-                                secondMethodCodification(codifData, binData, sCod);
-                            }
+                            secondMethodCodification(codifData, binData, sCod);
                         }
 
                         totalCodif += binData;
                     }
 
+                    // Añadir separador entre usuarios (excepto después del último)
                     if (j < numUsers - 1) {
-                        totalCodif += separador; // Añadir separador entre usuarios
+                        totalCodif += separador;
                     }
                 }
 
                 // Guardar datos binarios codificados en el archivo
                 try {
                     writeBinaryFile(totalCodif, "users.bin", false);
+                    cout << "Datos guardados correctamente." << endl;
                 } catch (const char* msg) {
-                    cerr << "Error: " << msg << endl;
+                    cerr << "Error al guardar: " << msg << endl;
                 }
             }
+
             cout << "Ha salido del programa" << endl;
 
             // Liberar memoria usada por la matriz de usuarios

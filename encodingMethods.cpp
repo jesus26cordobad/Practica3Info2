@@ -105,6 +105,15 @@ void secondMethodCodification(std::string dataBinary, std::string &codification,
             std::string rotatedBlock = block.substr(n - 1) + block.substr(0, n - 1);
             codification += rotatedBlock; // Concatenar el bloque rotado a la codificación final
         }
+        else{
+            codification += block; // Bloques incompletos sin modificar
+        }
+    }
+    // PADDING: Rellenar con ceros hasta que sea múltiplo de 8
+    int remainder = codification.size() % 8;
+    if (remainder != 0) {
+        int padding = 8 - remainder;
+        codification.append(padding, '0');
     }
 }
 
@@ -185,8 +194,8 @@ void firstMethodDecodification(const std::string dataBinary, std::string &decodi
             // Recuento de 1s y 0s del bloque actual decodificado para la siguiente iteracion
             cont1 = 0; cont0 = 0;
 
-            for (int j = 0; j < n; j++){
-                if(decodified[beg + j] == '1') cont1 ++;
+            for (int j = 0; j < n && beg + j < dataBinary.length(); j++){
+                if(dataBinary[beg + j] == '1') cont1 ++;
                 else cont0 ++;
             }
         }
@@ -218,6 +227,9 @@ void secondMethodDecodification(std::string dataBinary, std::string &decodified,
             // Al concatenarlos, se consigue el bloque rotado
             std::string rotatedBlock = block.substr(1, n-1) + block[0];
             decodified += rotatedBlock;
+        }
+        else{
+            decodified += block;
         }
     }
 }
