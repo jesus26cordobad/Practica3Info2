@@ -1,5 +1,5 @@
-#ifndef ENCODINGMETHODS_H
-#define ENCODINGMETHODS_H
+#ifndef ENCONDINGMETHODS_H
+#define ENCONDINGMETHODS_H
 #include <string>
 
 void firstMethodCodification(const std::string dataBinary, std::string &codification, int n);
@@ -7,4 +7,4 @@ void secondMethodCodification(std::string dataBinary, std::string &codification,
 void firstMethodDecodification(const std::string dataBinary, std::string &decodified, int n);
 void secondMethodDecodification(std::string dataBinary, std::string &decodified, int n);
 
-#endif // ENCODINGMETHODS_H
+#endif // ENCONDINGMETHODS_H

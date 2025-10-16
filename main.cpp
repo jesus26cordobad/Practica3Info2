@@ -1,119 +1,128 @@
 #include "fileOperations.h"
-#include "encodingMethods.h"
 #include "binaryOperations.h"
 #include "validations.h"
-
+#include "encodingMethods.h"
+#include "utilitiesMain.h"
 #include <iostream>
 #include <cctype>
 
 using namespace std;
 
-int main()
-{
-    cout << "CODIFICACION" << endl;
-    string openFileCod = "";
-    //cout << "Ingrese el nombre del archivo fuente: " << endl;
-    //cin >> openFileCod;
-    openFileCod = "archivo.txt";
+int main() {
 
-    int sCod = 0, tamCod = 0;
-
-    char *arrayCharCod = nullptr;
-    readFileChar(openFileCod, arrayCharCod, tamCod); //Se lee el archivo por caracter
-    string binaryCod = "";
-
-    for (int i = 0; i < tamCod; i++){
-        if (isspace(arrayCharCod[i])) {
-            continue; // Ignorar todos los caracteres de espacio en blanco
-        }
-        binaryCod += binaryConversion(arrayCharCod[i]); // Se concatena cada bin(char[i]) en un string
-    }
-
-    delete[] arrayCharCod; // Se libera la memoria del arreglo char, y se trabaja con el string de binarios
-    arrayCharCod = nullptr;
-
-    cout << "Digite el metodo que desea para codificar: " << endl;
-    cout << "1. Primer metodo: codificacion por cantidad de bits.\n2. Segundo metodo: codificacion por rotacion de 1 bit hacia la derecha." << endl;
+    // Mostrar menú de métodos de codificación disponibles
+    cout << "Metodos para codificar: " << endl;
+    cout << "1. Codificacion por cantidad de bits.\n2. Codificacion por rotacion de 1 bit hacia la derecha." << endl;
     int mCod = intValidation(1, 2);
 
+    // Solicitar tamaño de bloque para la codificación
     cout << "Ingrese la cantidad de bits para cada bloque: " << endl;
-    sCod = intValidation(1, 16);
+    int sCod = intValidation(3, 8);
 
-    if (mCod == 1){
-        cout << "El archivo en binario seria: " << endl;
-        cout << binaryCod << endl;
+    // Variables para almacenar la contraseña del administrador
+    int tamRealPassw = 0;
+    char *arrayRealPassw = nullptr;
+    string binRealPassw = "";
 
-        string codifBinary = "";
-        firstMethodCodification(binaryCod,codifBinary, sCod);
-        cout << "El archivo codificado con el primer metodo seria: " << endl;
-        cout << codifBinary << endl;
-
-        string outputFile = "archivoCodificado.bin";
-        writeBinaryFile (codifBinary, outputFile);
-    }
-    else{
-        cout << "El archivo en binario seria: " << endl;
-        cout << binaryCod << endl;
-
-        string codifBinary = "";
-        secondMethodCodification(binaryCod, codifBinary, sCod);
-        cout << "El archivo codificado con el segundo metodo seria: " << endl;
-        cout << codifBinary << endl;
-
-        string outputFile = "archivoCodificado.bin";
-        writeBinaryFile (codifBinary, outputFile);
+    try {
+        // Leer contraseña del archivo y convertir a binario (ignorando espacios)
+        readFileChar("password.txt", arrayRealPassw, tamRealPassw);
+        for (int i = 0; i < tamRealPassw; i++) {
+            if (isspace(arrayRealPassw[i])) continue;
+            binRealPassw += binaryConversion(arrayRealPassw[i]);
+        }
+        delete[] arrayRealPassw;  // Liberar memoria del arreglo leído
+    } catch (const char* msg) {
+        cerr << "Error al leer el archivo: " << msg << endl;
+        return 1;
     }
 
-    cout << "\nDECODIFICACION" << endl;
-
-    string openFileDec = "";
-    //cout << "Ingrese el nombre del archivo fuente: " << endl;
-    //cin >> openFileDec;
-    openFileDec = "archivoCodificado.bin";
-
-    int sDec = 0, tamDec = 0;
-
-    char *arrayCharDec = nullptr;
-    readFileChar(openFileDec, arrayCharDec, tamDec); //Se lee el archivo por caracter
-    string binaryDec = "";
-
-    for (int i = 0; i < tamDec; i++){
-        binaryDec += binaryConversion(arrayCharDec[i]); // Se concatena cada bin(char[i]) en un string
+    // Codificar la contraseña del administrador según el método elegido
+    string codRealPassw = "";
+    if (mCod == 1) {
+        firstMethodCodification(binRealPassw, codRealPassw, sCod);
+    } else {
+        secondMethodCodification(binRealPassw, codRealPassw, sCod);
     }
+    writeTextFile(codRealPassw, "sudo.txt"); // Guardar contraseña codificada
 
-    delete[] arrayCharDec; // Se libera la memoria del arreglo char, y se trabaja con el string de binarios
-    arrayCharDec = nullptr;
+    // Cargar datos binarios de los usuarios desde archivo
+    int tamFileBin = 0;
+    char *arrayCharBin = nullptr;
+    string binaryData = "";
+    leerDatosArchivo(binaryData, tamFileBin, arrayCharBin);
 
-    cout << "Digite el metodo que desea para decodificar: " << endl;
-    cout << "1. Primer metodo: decodificacion por cantidad de bits.\n2. Segundo metodo: decodificacion por rotacion de 1 bit hacia la derecha." << endl;
-    int mDec = intValidation(1, 2);
+    // Decodificar usuarios desde los datos binarios
+    int numUsers = 0;
+    string **users = nullptr;
+    loadUsersFromBin(binaryData, users, numUsers, mCod, sCod);
 
-    cout << "Ingrese la cantidad de bits para cada bloque: " << endl;
-    sDec = intValidation(1, 16);
+    bool modifiedData = false; // Indica si hubo cambios en los datos
+    cout << "\n**********BIENVENIDO**********\n";
 
-    if (mDec == 1){
-        cout << "El archivo en binario seria: " << endl;
-        cout << binaryDec << endl;
+    bool exit = false;
+    while (!exit) {
+        // Menú principal del sistema
+        cout << "\nMENU PRINCIPAL:\n1. Menu administrador.\n2. Menu usuario.\n3. Salir.\n";
+        int opc = intValidation(1, 3);
 
-        string decodText = "";
-        firstMethodDecodification(binaryDec,decodText, sDec);
-        cout << "El archivo decodificado con el primer metodo seria: " << endl;
-        cout << decodText << endl;
+        if (opc == 1) {
+            menuAdministrador(mCod, sCod, codRealPassw, users, numUsers, modifiedData);
+        } else if (opc == 2) {
+            menuUsuario(users, numUsers, modifiedData);
+        } else {
+            exit = true;
 
-        string outputFile = "archivoDecodificado.txt";
-        writeTextFile (decodText, outputFile);
-    }
-    else{
-        cout << "El archivo en binario seria: " << endl;
-        cout << binaryDec << endl;
+            // Si hubo modificaciones, guardar los datos actualizados
+            const string separador = "00101111"; // Separador binario entre usuarios
 
-        string decodText = "";
-        secondMethodDecodification(binaryDec, decodText, sDec);
-        cout << "El archivo decodificado con el segundo metodo seria: " << endl;
-        cout << decodText << endl;
+            if (modifiedData) {
+                string totalCodif = "";
 
-        string outputFile = "archivoDecodificado.txt";
-        writeTextFile (decodText, outputFile);
+                for (int j = 0; j < numUsers; j++) {
+                    for (int i = 0; i < 3; i++) {
+                        string binData = "", codifData = "";
+                        codifData = users[j][i];
+
+                        // Codificar cada campo del usuario (usuario, clave, dinero)
+                        if (i == 2) {
+                            codifData = users[j][i];
+                            if (mCod == 1) {
+                                firstMethodCodification(codifData, binData, sCod);
+                            } else if (mCod == 2) {
+                                secondMethodCodification(codifData, binData, sCod);
+                            }
+                        } else {
+                            if (mCod == 1) {
+                                firstMethodCodification(codifData, binData, sCod);
+                            } else if (mCod == 2) {
+                                secondMethodCodification(codifData, binData, sCod);
+                            }
+                        }
+
+                        totalCodif += binData;
+                    }
+
+                    if (j < numUsers - 1) {
+                        totalCodif += separador; // Añadir separador entre usuarios
+                    }
+                }
+
+                // Guardar datos binarios codificados en el archivo
+                try {
+                    writeBinaryFile(totalCodif, "users.bin", false);
+                } catch (const char* msg) {
+                    cerr << "Error: " << msg << endl;
+                }
+            }
+            cout << "Ha salido del programa" << endl;
+
+            // Liberar memoria usada por la matriz de usuarios
+            for (int i = 0; i < numUsers; i++) {
+                delete[] users[i];
+            }
+            delete[] users;
+        }
     }
     return 0;
 }
